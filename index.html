@@ -5,122 +5,214 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manga Reader Pro</title>
     <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --background-color: #f5f5f5;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --muted-text: #7f8c8d;
+            --error-color: #e74c3c;
+        }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f5f5f5;
-            color: #333;
+            background-color: var(--background-color);
+            color: var(--text-color);
         }
+        
         h1 {
             text-align: center;
             color: #2c3e50;
             margin-bottom: 30px;
         }
+        
         .controls {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 15px;
+            margin-bottom: 25px;
             align-items: center;
         }
+        
         .search-container {
             display: flex;
             flex-grow: 1;
             min-width: 300px;
         }
+        
         #search-input {
             flex: 1;
-            padding: 10px;
+            padding: 12px 15px;
             font-size: 16px;
             border: 1px solid #ddd;
-            border-radius: 4px 0 0 4px;
+            border-radius: 6px 0 0 6px;
+            border-right: none;
         }
+        
         #search-button {
-            padding: 10px 20px;
-            background-color: #3498db;
+            padding: 0 20px;
+            background-color: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 0 4px 4px 0;
+            border-radius: 0 6px 6px 0;
             cursor: pointer;
             font-size: 16px;
+            transition: background-color 0.2s;
         }
+        
         #search-button:hover {
-            background-color: #2980b9;
+            background-color: var(--secondary-color);
         }
+        
         .source-selector {
-            padding: 10px;
-            border-radius: 4px;
+            padding: 12px 15px;
+            border-radius: 6px;
             border: 1px solid #ddd;
-            min-width: 200px;
+            min-width: 250px;
+            background-color: white;
+            font-size: 16px;
         }
+        
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-select {
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background-color: white;
+        }
+        
         .manga-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
         }
+        
         .manga-card {
-            background: white;
-            border-radius: 8px;
+            background: var(--card-bg);
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
+        
         .manga-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
-        .manga-cover {
+        
+        .manga-cover-container {
+            position: relative;
             width: 100%;
-            height: 300px;
-            object-fit: cover;
-            background-color: #eee;
+            padding-top: 140%;
+            overflow: hidden;
         }
+        
+        .manga-cover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        
         .manga-info {
             padding: 15px;
         }
+        
         .manga-title {
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-weight: 600;
+            margin-bottom: 8px;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            line-height: 1.3;
         }
+        
         .manga-details {
-            font-size: 12px;
-            color: #7f8c8d;
+            font-size: 13px;
+            color: var(--muted-text);
             display: flex;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 5px;
         }
+        
         .loading {
             text-align: center;
-            padding: 20px;
+            padding: 40px;
             font-size: 18px;
-            color: #7f8c8d;
+            color: var(--muted-text);
         }
+        
         .error {
-            color: #e74c3c;
+            color: var(--error-color);
             text-align: center;
-            padding: 20px;
+            padding: 40px;
+            font-size: 16px;
         }
+        
         .pagination {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
         }
+        
         .pagination button {
-            padding: 8px 15px;
-            background-color: #3498db;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
+            font-size: 15px;
+            min-width: 100px;
+            transition: background-color 0.2s;
         }
+        
+        .pagination button:hover:not(:disabled) {
+            background-color: var(--secondary-color);
+        }
+        
         .pagination button:disabled {
             background-color: #bdc3c7;
             cursor: not-allowed;
+        }
+        
+        .page-info {
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .manga-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-container {
+                min-width: auto;
+            }
         }
     </style>
 </head>
@@ -129,96 +221,141 @@
     
     <div class="controls">
         <div class="search-container">
-            <input type="text" id="search-input" placeholder="Search for manga...">
-            <button id="search-button">Search</button>
+            <input type="text" id="search-input" placeholder="Search for manga..." autocomplete="off">
+            <button id="search-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </button>
         </div>
         <select id="source-selector" class="source-selector">
-            <option value="mangadex">MangaDex</option>
-            <!-- Extensions will be loaded here -->
+            <option value="" disabled selected>Loading sources...</option>
         </select>
     </div>
     
+    <div class="filter-controls" id="filter-controls" style="display: none;">
+        <!-- Filters will be added dynamically -->
+    </div>
+    
     <div id="results-container">
-        <div class="loading">Loading popular manga...</div>
+        <div class="loading">Loading sources...</div>
     </div>
 
-    <div class="pagination" id="pagination">
+    <div class="pagination" id="pagination" style="display: none;">
         <button id="prev-page" disabled>Previous</button>
-        <span id="page-info">Page 1</span>
+        <div class="page-info" id="page-info">Page 1</div>
         <button id="next-page">Next</button>
     </div>
 
     <script>
-        // Global variables
-        let extensions = {};
-        let currentSource = 'mangadex';
-        let currentPage = 1;
-        let totalPages = 1;
-        let currentQuery = '';
+        // Global state
+        const state = {
+            sources: {},
+            extensions: {},
+            currentSource: null,
+            currentPage: 1,
+            totalPages: 1,
+            currentQuery: '',
+            isLoading: false,
+            sourceFilters: {}
+        };
 
         // DOM Elements
-        const resultsContainer = document.getElementById('results-container');
-        const prevPageBtn = document.getElementById('prev-page');
-        const nextPageBtn = document.getElementById('next-page');
-        const pageInfo = document.getElementById('page-info');
+        const dom = {
+            resultsContainer: document.getElementById('results-container'),
+            sourceSelector: document.getElementById('source-selector'),
+            searchInput: document.getElementById('search-input'),
+            searchButton: document.getElementById('search-button'),
+            filterControls: document.getElementById('filter-controls'),
+            pagination: document.getElementById('pagination'),
+            prevPageBtn: document.getElementById('prev-page'),
+            nextPageBtn: document.getElementById('next-page'),
+            pageInfo: document.getElementById('page-info')
+        };
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', async () => {
             await loadExtensions();
             setupEventListeners();
-            fetchManga();
+            
+            // Set default source if available
+            if (Object.keys(state.sources).length > 0) {
+                const firstSource = Object.keys(state.sources)[0];
+                state.currentSource = firstSource;
+                dom.sourceSelector.value = firstSource;
+                fetchManga();
+            }
         });
 
-        // Load extensions from GitHub
+        // Load extensions from repository
         async function loadExtensions() {
             try {
-                const response = await fetch('https://raw.githubusercontent.com/keiyoushi/extensions/repo/index.min.json');
-                extensions = await response.json();
+                showLoading('Loading extensions...');
                 
-                const selector = document.getElementById('source-selector');
-                Object.keys(extensions).forEach(key => {
+                // Load extensions manifest
+                const extensionsResponse = await fetch('/api/extensions');
+                const extensionsData = await extensionsResponse.json();
+                
+                if (!extensionsResponse.ok) {
+                    throw new Error(extensionsData.error || 'Failed to load extensions');
+                }
+                
+                state.extensions = extensionsData.extensions;
+                state.sources = extensionsData.sources;
+                
+                // Populate source selector
+                dom.sourceSelector.innerHTML = '';
+                Object.entries(state.sources).forEach(([id, source]) => {
                     const option = document.createElement('option');
-                    option.value = key;
-                    option.textContent = extensions[key].name;
-                    selector.appendChild(option);
+                    option.value = id;
+                    option.textContent = source.name;
+                    dom.sourceSelector.appendChild(option);
                 });
+                
+                if (Object.keys(state.sources).length === 0) {
+                    showError('No manga sources available');
+                }
             } catch (error) {
                 console.error('Failed to load extensions:', error);
+                showError(`Failed to load extensions: ${error.message}`);
             }
         }
 
         // Setup event listeners
         function setupEventListeners() {
-            document.getElementById('search-button').addEventListener('click', () => {
-                currentQuery = document.getElementById('search-input').value.trim();
-                currentPage = 1;
+            dom.searchButton.addEventListener('click', () => {
+                state.currentQuery = dom.searchInput.value.trim();
+                state.currentPage = 1;
                 fetchManga();
             });
             
-            document.getElementById('search-input').addEventListener('keypress', (e) => {
+            dom.searchInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
-                    currentQuery = document.getElementById('search-input').value.trim();
-                    currentPage = 1;
+                    state.currentQuery = dom.searchInput.value.trim();
+                    state.currentPage = 1;
                     fetchManga();
                 }
             });
             
-            document.getElementById('source-selector').addEventListener('change', (e) => {
-                currentSource = e.target.value;
-                currentPage = 1;
+            dom.sourceSelector.addEventListener('change', (e) => {
+                state.currentSource = e.target.value;
+                state.currentPage = 1;
+                state.currentQuery = '';
+                dom.searchInput.value = '';
                 fetchManga();
             });
             
-            prevPageBtn.addEventListener('click', () => {
-                if (currentPage > 1) {
-                    currentPage--;
+            dom.prevPageBtn.addEventListener('click', () => {
+                if (state.currentPage > 1) {
+                    state.currentPage--;
                     fetchManga();
                 }
             });
             
-            nextPageBtn.addEventListener('click', () => {
-                if (currentPage < totalPages) {
-                    currentPage++;
+            dom.nextPageBtn.addEventListener('click', () => {
+                if (state.currentPage < state.totalPages) {
+                    state.currentPage++;
                     fetchManga();
                 }
             });
@@ -226,74 +363,55 @@
 
         // Main function to fetch manga
         async function fetchManga() {
-            resultsContainer.innerHTML = '<div class="loading">Loading...</div>';
-            updatePagination();
+            if (state.isLoading || !state.currentSource) return;
+            
+            state.isLoading = true;
+            showLoading('Loading manga...');
+            dom.pagination.style.display = 'none';
             
             try {
-                let data;
-                if (currentSource === 'mangadex') {
-                    data = await fetchMangaDex();
-                } else {
-                    data = await fetchExtensionSource();
+                const source = state.sources[state.currentSource];
+                if (!source) throw new Error('Source not found');
+                
+                // Fetch manga from the selected source
+                const response = await fetch('/api/fetch-manga', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        sourceId: state.currentSource,
+                        query: state.currentQuery,
+                        page: state.currentPage,
+                        filters: state.sourceFilters[state.currentSource] || {}
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to fetch manga');
                 }
                 
-                if (data.data && data.data.length > 0) {
-                    displayManga(data.data);
-                    totalPages = Math.ceil(data.total / 20) || 1;
+                if (data.manga && data.manga.length > 0) {
+                    displayManga(data.manga);
+                    state.totalPages = data.totalPages || 1;
+                    updatePagination();
+                    
+                    // Show filters if available
+                    if (data.filters && data.filters.length > 0) {
+                        setupFilters(data.filters);
+                    } else {
+                        dom.filterControls.style.display = 'none';
+                    }
                 } else {
-                    resultsContainer.innerHTML = '<div class="error">No manga found</div>';
+                    showError('No manga found');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                resultsContainer.innerHTML = `<div class="error">Error loading manga: ${error.message}</div>`;
-            }
-            
-            updatePagination();
-        }
-
-        // Fetch from MangaDex
-        async function fetchMangaDex() {
-            let url = '/api/manga';
-            const params = new URLSearchParams();
-            
-            params.append('includes[]', 'cover_art');
-            params.append('contentRating[]', 'safe');
-            params.append('contentRating[]', 'suggestive');
-            params.append('limit', '20');
-            params.append('offset', String((currentPage - 1) * 20));
-            
-            if (currentQuery) {
-                params.append('title', currentQuery);
-                params.append('order[relevance]', 'desc');
-            } else {
-                params.append('order[followedCount]', 'desc');
-            }
-            
-            const response = await fetch(`${url}?${params.toString()}`);
-            if (!response.ok) throw new Error('Failed to fetch manga');
-            
-            const data = await response.json();
-            return {
-                data: data.data,
-                total: data.total || data.data.length
-            };
-        }
-
-        // Fetch from extension source
-        async function fetchExtensionSource() {
-            const ext = extensions[currentSource];
-            if (!ext) throw new Error('Extension not found');
-            
-            try {
-                // This is a simplified implementation - in a real app you'd need to handle
-                // the extension's specific API requirements
-                const response = await fetch(`/api/proxy?url=${encodeURIComponent(ext.baseUrl)}&source=${currentSource}&query=${encodeURIComponent(currentQuery)}&page=${currentPage}`);
-                if (!response.ok) throw new Error('Failed to fetch from extension');
-                
-                return await response.json();
-            } catch (error) {
-                console.error('Extension fetch error:', error);
-                throw new Error(`Failed to load from ${ext.name}`);
+                showError(`Error loading manga: ${error.message}`);
+            } finally {
+                state.isLoading = false;
             }
         }
 
@@ -302,35 +420,23 @@
             let html = '<div class="manga-grid">';
             
             mangaList.forEach(manga => {
-                const title = manga.attributes?.title?.en || 
-                             manga.attributes?.title?.ja || 
-                             manga.attributes?.title?.['ja-ro'] || 
-                             manga.title ||
-                             Object.values(manga.attributes?.title || {})[0] || 
-                             'Untitled';
-                
-                // Handle different cover image formats
-                let coverUrl = '';
-                if (manga.relationships) {
-                    const coverArt = manga.relationships.find(r => r.type === 'cover_art');
-                    if (coverArt?.attributes?.fileName) {
-                        coverUrl = `https://uploads.mangadex.org/covers/${manga.id}/${coverArt.attributes.fileName}.256.jpg`;
-                    }
-                } else if (manga.cover) {
-                    coverUrl = manga.cover.startsWith('http') ? manga.cover : `${extensions[currentSource]?.baseUrl || ''}${manga.cover}`;
-                }
+                const title = manga.title || 'Untitled';
+                const coverUrl = manga.cover || 'https://via.placeholder.com/300x450?text=No+Cover';
+                const status = manga.status ? manga.status.charAt(0).toUpperCase() + manga.status.slice(1) : 'Unknown';
                 
                 html += `
-                    <div class="manga-card">
-                        <img src="${coverUrl || 'https://via.placeholder.com/200x300?text=No+Cover'}" 
-                             alt="${title}" 
-                             class="manga-cover"
-                             onerror="this.src='https://via.placeholder.com/200x300?text=No+Cover'">
+                    <div class="manga-card" data-id="${manga.id}">
+                        <div class="manga-cover-container">
+                            <img src="${coverUrl}" 
+                                 alt="${title}" 
+                                 class="manga-cover"
+                                 onerror="this.src='https://via.placeholder.com/300x450?text=No+Cover'">
+                        </div>
                         <div class="manga-info">
-                            <div class="manga-title">${title}</div>
+                            <div class="manga-title" title="${title}">${title}</div>
                             <div class="manga-details">
-                                <span>${manga.attributes?.status || manga.status || 'N/A'}</span>
-                                <span>${manga.attributes?.year || manga.year || ''}</span>
+                                <span>${status}</span>
+                                ${manga.year ? `<span>${manga.year}</span>` : ''}
                             </div>
                         </div>
                     </div>
@@ -338,14 +444,161 @@
             });
             
             html += '</div>';
-            resultsContainer.innerHTML = html;
+            dom.resultsContainer.innerHTML = html;
+            dom.pagination.style.display = 'flex';
+            
+            // Add click handlers to manga cards
+            document.querySelectorAll('.manga-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const mangaId = card.getAttribute('data-id');
+                    viewMangaDetails(mangaId);
+                });
+            });
+        }
+
+        // Setup filter controls
+        function setupFilters(filters) {
+            dom.filterControls.innerHTML = '';
+            dom.filterControls.style.display = 'flex';
+            
+            filters.forEach(filter => {
+                if (filter.type === 'Select' || filter.type === 'TriState') {
+                    const select = document.createElement('select');
+                    select.className = 'filter-select';
+                    select.dataset.filterName = filter.name;
+                    
+                    // Add default option
+                    const defaultOption = document.createElement('option');
+                    defaultOption.value = '';
+                    defaultOption.textContent = filter.name;
+                    select.appendChild(defaultOption);
+                    
+                    // Add filter options
+                    filter.values.forEach(value => {
+                        const option = document.createElement('option');
+                        option.value = value.id || value;
+                        option.textContent = value.name || value;
+                        select.appendChild(option);
+                    });
+                    
+                    // Set current value if exists
+                    if (state.sourceFilters[state.currentSource]?.[filter.name] !== undefined) {
+                        select.value = state.sourceFilters[state.currentSource][filter.name];
+                    }
+                    
+                    select.addEventListener('change', () => {
+                        if (!state.sourceFilters[state.currentSource]) {
+                            state.sourceFilters[state.currentSource] = {};
+                        }
+                        
+                        if (select.value === '') {
+                            delete state.sourceFilters[state.currentSource][filter.name];
+                        } else {
+                            state.sourceFilters[state.currentSource][filter.name] = select.value;
+                        }
+                        
+                        state.currentPage = 1;
+                        fetchManga();
+                    });
+                    
+                    dom.filterControls.appendChild(select);
+                }
+                // Add other filter types (Checkbox, Text, etc.) as needed
+            });
+        }
+
+        // View manga details
+        function viewMangaDetails(mangaId) {
+            showLoading('Loading manga details...');
+            
+            fetch('/api/manga-details', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    sourceId: state.currentSource,
+                    mangaId: mangaId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) throw new Error(data.error);
+                displayMangaDetails(data);
+            })
+            .catch(error => {
+                console.error('Error loading manga details:', error);
+                showError(`Failed to load manga details: ${error.message}`);
+            });
+        }
+
+        // Display manga details (simplified)
+        function displayMangaDetails(details) {
+            let html = `
+                <div class="manga-detail-view">
+                    <button id="back-button" style="margin-bottom: 20px; padding: 8px 15px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        Back to list
+                    </button>
+                    <div style="display: flex; gap: 20px; margin-bottom: 30px;">
+                        <div style="flex: 0 0 300px;">
+                            <img src="${details.cover || 'https://via.placeholder.com/300x450?text=No+Cover'}" 
+                                 style="width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"
+                                 onerror="this.src='https://via.placeholder.com/300x450?text=No+Cover'">
+                        </div>
+                        <div style="flex: 1;">
+                            <h2 style="margin-top: 0;">${details.title || 'Untitled'}</h2>
+                            ${details.author ? `<p><strong>Author:</strong> ${details.author}</p>` : ''}
+                            ${details.artist ? `<p><strong>Artist:</strong> ${details.artist}</p>` : ''}
+                            ${details.status ? `<p><strong>Status:</strong> ${details.status}</p>` : ''}
+                            ${details.description ? `<p style="white-space: pre-line;">${details.description}</p>` : ''}
+                        </div>
+                    </div>
+                    <h3>Chapters</h3>
+                    <div class="chapter-list" style="margin-top: 20px;">
+            `;
+            
+            if (details.chapters && details.chapters.length > 0) {
+                details.chapters.forEach(chapter => {
+                    html += `
+                        <div class="chapter-item" style="padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                            <span>${chapter.name || 'Chapter ' + chapter.number}</span>
+                            <span style="color: var(--muted-text); font-size: 0.9em;">${chapter.date || ''}</span>
+                        </div>
+                    `;
+                });
+            } else {
+                html += '<p>No chapters available</p>';
+            }
+            
+            html += `
+                    </div>
+                </div>
+            `;
+            
+            dom.resultsContainer.innerHTML = html;
+            dom.pagination.style.display = 'none';
+            
+            // Add back button handler
+            document.getElementById('back-button').addEventListener('click', () => {
+                fetchManga();
+            });
         }
 
         // Update pagination controls
         function updatePagination() {
-            pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-            prevPageBtn.disabled = currentPage <= 1;
-            nextPageBtn.disabled = currentPage >= totalPages;
+            dom.pageInfo.textContent = `Page ${state.currentPage} of ${state.totalPages}`;
+            dom.prevPageBtn.disabled = state.currentPage <= 1;
+            dom.nextPageBtn.disabled = state.currentPage >= state.totalPages;
+        }
+
+        // Show loading state
+        function showLoading(message) {
+            dom.resultsContainer.innerHTML = `<div class="loading">${message}</div>`;
+        }
+
+        // Show error state
+        function showError(message) {
+            dom.resultsContainer.innerHTML = `<div class="error">${message}</div>`;
         }
     </script>
 </body>
