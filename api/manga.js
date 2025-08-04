@@ -5,8 +5,9 @@ export default async function handler(req, res) {
     let apiUrl = 'https://api.mangadex.org/manga';
     const params = new URLSearchParams();
     
-    // Set default parameters
+    // Essential parameters for getting manga with cover art
     params.append('includes[]', 'cover_art');
+    params.append('includes[]', 'author');
     params.append('contentRating[]', 'safe');
     params.append('contentRating[]', 'suggestive');
     params.append('contentRating[]', 'erotica');
@@ -14,8 +15,6 @@ export default async function handler(req, res) {
     params.append('limit', '20');
     
     if (query) {
-      // If there's a search query, use the search endpoint
-      apiUrl = 'https://api.mangadex.org/manga';
       params.append('title', query);
       params.append('order[relevance]', 'desc');
     }
