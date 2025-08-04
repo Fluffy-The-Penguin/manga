@@ -5,7 +5,6 @@ export default async function handler(req, res) {
     let apiUrl = 'https://api.mangadex.org/manga';
     const params = new URLSearchParams();
     
-    // Essential parameters for getting manga with cover art
     params.append('includes[]', 'cover_art');
     params.append('includes[]', 'author');
     params.append('contentRating[]', 'safe');
@@ -27,7 +26,6 @@ export default async function handler(req, res) {
     
     const data = await response.json();
     
-    // Cache the response for 1 hour
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate');
     res.status(200).json(data);
   } catch (error) {
